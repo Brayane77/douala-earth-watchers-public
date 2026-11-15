@@ -1,6 +1,6 @@
 /** Parcours manuel d'évaluation et de projection mensuelle sur un CSV utilisateur. */
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { AlertTriangle, BrainCircuit, Download, FileSpreadsheet, Info, LoaderCircle, Upload } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, Download, FileSpreadsheet, LoaderCircle, Upload } from 'lucide-react';
 import {
   CartesianGrid,
   Line,
@@ -348,11 +348,6 @@ export function MonthlyMlLab() {
           <p>Évaluation et scénario exploratoires sur une série mensuelle que vous fournissez.</p>
         </div>
         <span className="ml-experimental-badge">Expérimental · CSV utilisateur</span>
-      </div>
-
-      <div className="ml-scope-callout">
-        <Info size={18} aria-hidden="true" />
-        <p>Ce calcul est séparé du forecast quotidien T2M et des avis officiels. Aucun entraînement ne démarre à l’ouverture de la page : soumettez le formulaire pour lancer une évaluation. Le fichier est transmis pour cette requête, sans archivage par l’application; sa provenance reste à déclarer par vous.</p>
       </div>
 
       <form className="ml-form" onSubmit={(event) => { void submitEvaluation(event); }}>

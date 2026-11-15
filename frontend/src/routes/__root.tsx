@@ -11,6 +11,7 @@ import {
 } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import appCss from '../styles.css?url';
+import { THEME_BOOT_SCRIPT } from '../lib/theme';
 
 /** Affiche un état 404 avec un lien vers la page d’accueil. */
 function NotFoundComponent() {
@@ -58,11 +59,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: 'og:type', content: 'website' },
     ],
     links: [
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       { rel: 'stylesheet', href: appCss },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap' },
     ],
+    // Applique le thème mémorisé avant le premier rendu : le fond blanc reste le défaut
+    // et un choix sombre ne provoque pas d'éclair blanc au chargement.
+    scripts: [{ children: THEME_BOOT_SCRIPT }],
   }),
   shellComponent: RootShell,
   component: RootComponent,

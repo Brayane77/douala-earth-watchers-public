@@ -111,7 +111,7 @@ export function MapPanel({ metadata, sector, observations }: MapPanelProps) {
   }, [isNearViewport, metadata, unavailableMessage, visibleRows, reloadKey]);
 
   return (
-    <section ref={panelElement} className="panel map-panel" id="map">
+    <section ref={panelElement} className="panel" id="map">
       <div className="panel-heading map-heading">
         <div>
           <div className="section-title"><MapPinned size={19} aria-hidden="true" /><h2>Carte interactive · Plotly</h2></div>
@@ -153,12 +153,12 @@ export function MapPanel({ metadata, sector, observations }: MapPanelProps) {
         )}
       </div>
 
-      <p className="map-caption">
+      <div className="map-caption">
         {isAirTemperature
           ? 'Le marqueur fixe montre le T2M mensuel (température de l’air à 2 m, pas la température de surface); la palette jaune–orange–rouge code sa valeur au seul point de référence.'
           : 'Le marqueur fixe montre la valeur mensuelle de l’indicateur sélectionné au seul point de référence.'}{' '}
-        La glissière et lecture/pause parcourent les mois visibles; l’échelle colorée correspond à cette sélection et ne constitue pas une alerte. Les coordonnées sont celles de référence du catalogue et ne garantissent pas la localisation exacte d’une mesure. Le fond de carte est © OpenStreetMap contributors. Aucune grille thermique ni limite de quartier n’est disponible : il n’y a ni interpolation spatiale ni valeur attribuée aux zones voisines.
-      </p>
+        La glissière et lecture/pause parcourent les mois visibles; l’échelle colorée correspond à cette sélection et ne constitue pas une alerte. Le fond de carte est © OpenStreetMap contributors. Aucune grille thermique ni limite de quartier n’est disponible : il n’y a ni interpolation spatiale ni valeur attribuée aux zones voisines.
+      </div>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Activity, AlertTriangle, ArrowLeft, ArrowRight, BellRing, CalendarDays, CheckCircle2, Info, LoaderCircle, Waves } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
+import brandLogo from '../assets/logo-dew.svg';
 import { MonthlyMlLab } from '../components/MonthlyMlLab';
 import {
   evaluateDailyT2MThreshold,
@@ -67,10 +68,10 @@ function ForecastsPage() {
   const thresholdUnit = variable === 'T2M' ? '°C' : 'mm/jour';
 
   return (
-    <div className="sources-page-shell forecast-page-shell">
+    <div className="sources-page-shell">
       <header className="topbar sources-topbar">
         <Link className="brand-lockup" to="/">
-          <span className="brand-mark"><Waves size={23} aria-hidden="true" /></span>
+          <span className="brand-mark"><img className="brand-logo" src={brandLogo} alt="" aria-hidden="true" /></span>
           <span className="brand-copy">
             <strong>Douala Earth Watchers</strong>
             <small>Prévisions et indicateurs exploratoires</small>
@@ -87,7 +88,7 @@ function ForecastsPage() {
           <div>
             <span className="eyebrow">T2M QUOTIDIEN · NASA POWER · LST</span>
             <h1>Prévisions et alertes</h1>
-            <p>Le backtest historique est séparé d’une prévision actuelle. Les alertes officielles et les seuils exploratoires ne sont jamais confondus.</p>
+            <p>Backtest historique, seuils définis par vous et alertes officielles : trois objets distincts, jamais confondus.</p>
           </div>
           <Link to="/validation-scientifique" className="back-link">Voir le backtest <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
@@ -118,11 +119,8 @@ function ForecastsPage() {
               </div>
               <dl className="source-details forecast-source-details">
                 <div><dt>Produit / variable</dt><dd>{forecast.data.source.provider} · {forecast.data.source.upstream_product} · T2M (air à 2 m)</dd></div>
-                <div><dt>Dernière date source</dt><dd>{forecast.data.source_end_date} · LST</dd></div>
-                <div><dt>Récupération du fichier</dt><dd>{forecast.data.retrieved_at ?? 'Non documentée'}</dd></div>
-                <div><dt>Point / résolution</dt><dd>{forecast.data.source.coordinates_requested.latitude.toFixed(2)}°N, {forecast.data.source.coordinates_requested.longitude.toFixed(2)}°E · {forecast.data.source.native_grid_resolution}</dd></div>
                 <div><dt>Dernière observation</dt><dd>{forecast.data.latest_observation.t2m_c.toFixed(2)} °C au {forecast.data.latest_observation.date}</dd></div>
-                <div><dt>Incertitude</dt><dd>{forecast.data.uncertainty}</dd></div>
+                <div><dt>Point / résolution</dt><dd>{forecast.data.source.coordinates_requested.latitude.toFixed(2)}°N, {forecast.data.source.coordinates_requested.longitude.toFixed(2)}°E · {forecast.data.source.native_grid_resolution}</dd></div>
               </dl>
               <div className="forecast-actions">
                 <Link to="/validation-scientifique" className="export-button">Consulter la validation historique <ArrowRight size={15} aria-hidden="true" /></Link>
@@ -210,23 +208,9 @@ function ForecastsPage() {
           </section>
         </div>
 
-        <section className="panel forecast-scope-panel" aria-labelledby="forecast-scope-title">
-          <div className="panel-heading">
-            <div>
-              <div className="section-title"><Info size={19} aria-hidden="true" /><h2 id="forecast-scope-title">Portée et limites</h2></div>
-              <p>Les séries historiques, les prévisions et les alertes restent des objets distincts.</p>
-            </div>
-          </div>
-          <div className="validation-rule-grid">
-            <div><strong>Produit évalué</strong><span>NASA POWER/MERRA-2 T2M, température moyenne de l’air à 2 m; pas une mesure de station ni de surface.</span></div>
-            <div><strong>Archive disponible</strong><span>{forecast.data?.source.source_period.start ?? '2015-01-01'} à {forecast.data?.source_end_date ?? '2025-12-31'}, LST; la date de récupération manque.</span></div>
-            <div><strong>Pas d’extrapolation actuelle</strong><span>Sans données fraîches et provenance d’émission, aucun point futur, intervalle ou risque n’est affiché.</span></div>
-          </div>
-        </section>
-
         <footer className="app-footer sources-footer">
           <span><strong>Douala Earth Watchers</strong> · observations et résultats versionnés</span>
-          <span>Prévision actuelle et alertes officielles non disponibles</span>
+          <span>Backtest et seuils exploratoires · non officiels</span>
         </footer>
       </main>
     </div>

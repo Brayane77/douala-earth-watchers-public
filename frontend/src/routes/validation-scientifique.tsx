@@ -14,6 +14,7 @@ import {
   YAxis,
 } from 'recharts';
 import { ThemeToggle } from '../components/ThemeToggle';
+import brandLogo from '../assets/logo-dew.svg';
 import { fetchDailyT2MValidation, type DailyValidationPrediction } from '../lib/api';
 
 // Déclare les métadonnées de la route de validation indépendante de la page Sources.
@@ -42,10 +43,10 @@ function ValidationPage() {
     .map(toChartRow) ?? [], [validation.data, selectedHorizon]);
 
   return (
-    <div className="sources-page-shell forecast-page-shell">
+    <div className="sources-page-shell">
       <header className="topbar sources-topbar">
         <Link className="brand-lockup" to="/">
-          <span className="brand-mark"><Waves size={23} aria-hidden="true" /></span>
+          <span className="brand-mark"><img className="brand-logo" src={brandLogo} alt="" aria-hidden="true" /></span>
           <span className="brand-copy">
             <strong>Douala Earth Watchers</strong>
             <small>Validation scientifique</small>
@@ -62,7 +63,7 @@ function ValidationPage() {
           <div>
             <span className="eyebrow">BACKTEST CHRONOLOGIQUE · NASA POWER T2M</span>
             <h1>Validation scientifique</h1>
-            <p>Résultats historiques hors échantillon, distincts de la validation structurelle des fichiers et de toute prévision actuelle.</p>
+            <p>Résultats hors échantillon, comparés à la persistance et à la baseline saisonnière.</p>
           </div>
           <Link to="/sources" className="back-link">Voir les sources <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
@@ -172,7 +173,7 @@ function ValidationReport({
 
   return (
     <>
-      <section className="panel validation-panel forecast-validation-summary" aria-labelledby="validation-summary-title">
+      <section className="panel validation-panel" aria-labelledby="validation-summary-title">
         <div className="panel-heading">
           <div>
             <div className="section-title"><CheckCircle2 size={19} aria-hidden="true" /><h2 id="validation-summary-title">Backtest prêt · résultats historiques</h2></div>
@@ -188,7 +189,7 @@ function ValidationReport({
           <div><strong>Baseline persistance</strong><span>Dernière T2M connue à l’origine, maintenue sur l’horizon demandé.</span></div>
           <div><strong>Baseline saisonnière</strong><span>Observation à la date cible moins 365 jours; uniquement si elle est disponible à l’origine.</span></div>
         </div>
-        <p className="validation-note"><Info size={15} aria-hidden="true" />{candidateStatus} {uncertainty} {stationValidation}</p>
+        <p className="validation-note"><Info size={15} aria-hidden="true" />{candidateStatus} {uncertainty} {stationValidation} Les scores sont un rejeu de la version archivée; le CSV ne fournit ni horodatage de récupération ni versions publiées.</p>
       </section>
 
       <section className="panel scientific-metrics-panel" aria-labelledby="metrics-title">
@@ -255,20 +256,6 @@ function ValidationReport({
               <Line name="Baseline saisonnière" type="linear" dataKey="seasonal" stroke="#8a6ab5" strokeWidth={1.2} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-      </section>
-
-      <section className="panel validation-caveats-panel" aria-labelledby="caveats-title">
-        <div className="panel-heading">
-          <div>
-            <div className="section-title"><AlertTriangle size={19} aria-hidden="true" /><h2 id="caveats-title">Interprétation à ne pas dépasser</h2></div>
-            <p>Le rapport évalue un produit de données, pas la météo indépendante observée à Douala.</p>
-          </div>
-        </div>
-        <div className="validation-rule-grid">
-          <div><strong>Échelle spatiale</strong><span>Point de requête sur une grille MERRA-2 d’environ 0,5° × 0,625°; aucune valeur par quartier.</span></div>
-          <div><strong>Archive historique</strong><span>Le CSV ne donne ni horodatage de récupération ni versions telles que publiées; les scores sont un rejeu sur la version archivée.</span></div>
-          <div><strong>Pas d’alerte</strong><span>Les métriques ne deviennent ni un seuil sanitaire, ni un avis officiel, ni un risque de pluie ou d’inondation.</span></div>
         </div>
       </section>
 

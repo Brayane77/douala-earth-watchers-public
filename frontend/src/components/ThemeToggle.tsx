@@ -1,44 +1,37 @@
-/** Commande d’interface pour choisir et mémoriser le thème clair ou sombre. */
+/**
+ * Commande d'interface pour choisir et mémoriser le thème clair ou sombre.
+ * Le mode clair est le fond blanc par défaut; le mode sombre n'est utilisé que
+ * si l'utilisateur l'a explicitement sélectionné.
+ */
 import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
-
-/** Valeurs de thème autorisées par les attributs CSS du document. */
-type Theme = 'light' | 'dark';
+import { applyTheme, persistTheme, resolveInitialTheme, type Theme } from '../lib/theme';
 
 /** Synchronise le choix de thème avec le document et le stockage local si disponible. */
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
   const [initialized, setInitialized] = useState(false);
 
+  // Reprend le choix enregistré (ou le blanc par défaut) déjà appliqué par le script d'amorçage.
   useEffect(() => {
-    let savedTheme: string | null = null;
-    try {
-      savedTheme = window.localStorage.getItem('dew-theme');
-    } catch {
-      savedTheme = null;
-    }
-    const systemPrefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
-    const initialTheme: Theme = savedTheme === 'dark' || savedTheme === 'light'
-      ? savedTheme
-      : systemPrefersDark ? 'dark' : 'light';
-    document.documentElement.dataset.theme = initialTheme;
+    const initialTheme = resolveInitialTheme();
+    applyTheme(initialTheme);
+    // Le rendu serveur et le premier rendu client affichent le bouton neutre pour éviter
+    // toute divergence d'hydratation; le libellé réel apparaît immédiatement après.
     setTheme(initialTheme);
     setInitialized(true);
   }, []);
 
+  // Applique chaque changement au document, y compris la classe utilisée par Tailwind.
   useEffect(() => {
-    if (initialized) document.documentElement.dataset.theme = theme;
+    if (initialized) applyTheme(theme);
   }, [initialized, theme]);
 
-  // Bascule le thème affiché et essaie de conserver le choix pour la prochaine visite.
+  // Bascule le thème affiché et conserve le choix explicite pour la prochaine visite.
   function toggleTheme() {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    try {
-      window.localStorage.setItem('dew-theme', nextTheme);
-    } catch {
-      // Le thème reste utilisable pour la session même si le navigateur bloque le stockage local.
-    }
+    persistTheme(nextTheme);
   }
 
   const Icon = theme === 'dark' ? Sun : Moon;
