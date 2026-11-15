@@ -1,7 +1,7 @@
 /** Tests unitaires des filtres, résumés, formats et exports; les fixtures sont synthétiques. */
 import { describe, expect, it } from 'vitest';
 import type { DatasetMetadata, Observation } from './api';
-import { csvContentForRows, formatValue, maximumPeriodNote, minimumPeriodNote, monthFromIndex, monthIndex, periodForPreset, rowsForPeriod, summarizeRows } from './climate';
+import { csvContentForRows, formatMonth, formatUnit, formatValue, maximumPeriodNote, minimumPeriodNote, monthFromIndex, monthIndex, periodForPreset, rowsForPeriod, summarizeRows } from './climate';
 
 const metadata: DatasetMetadata = {
   kind: 'temperature',
@@ -119,5 +119,20 @@ describe('helpers climatiques', () => {
   it('formate la mesure avec l’unité et la précision du catalogue', () => {
     expect(formatValue(28.46, metadata)).toBe('28,5 °C');
     expect(formatValue(null, metadata)).toBe('—');
+  });
+
+  it('suit la locale anglaise pour les dates, les valeurs et les mois ex æquo', () => {
+    expect(formatMonth('2020-01-01', false, 'en-GB')).toBe('January 2020');
+    expect(formatValue(28.46, metadata, 'en-GB', 'en')).toBe('28.5 °C');
+    expect(maximumPeriodNote(['2020-01', '2020-02'], 'en-GB', 'en')).toContain('Tied months');
+    expect(maximumPeriodNote([], 'en-GB', 'en')).toBe('No maximum observed in this selection');
+    expect(minimumPeriodNote(['2020-03'], 'en-GB', 'en')).toContain('Month of the observed minimum');
+  });
+
+  it('traduit les unités composées sans toucher aux symboles', () => {
+    expect(formatUnit('mm/mois', 'en')).toBe('mm/month');
+    expect(formatUnit('mm/jour', 'en')).toBe('mm/day');
+    expect(formatUnit('°C', 'en')).toBe('°C');
+    expect(formatUnit('mm/mois', 'fr')).toBe('mm/mois');
   });
 });

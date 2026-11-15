@@ -5,10 +5,12 @@
  */
 import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
+import { useTranslation } from '../lib/i18n';
 import { applyTheme, persistTheme, resolveInitialTheme, type Theme } from '../lib/theme';
 
 /** Synchronise le choix de thème avec le document et le stockage local si disponible. */
 export function ThemeToggle() {
+  const { t } = useTranslation();
   const [theme, setTheme] = useState<Theme>('light');
   const [initialized, setInitialized] = useState(false);
 
@@ -35,7 +37,9 @@ export function ThemeToggle() {
   }
 
   const Icon = theme === 'dark' ? Sun : Moon;
-  const label = theme === 'dark' ? 'Passer au mode clair' : 'Passer au mode sombre';
+  const label = theme === 'dark'
+    ? t('Passer au mode clair', 'Switch to light mode')
+    : t('Passer au mode sombre', 'Switch to dark mode');
 
   return (
     <button
@@ -47,7 +51,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
     >
       <Icon size={16} aria-hidden="true" />
-      <span>{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>
+      <span>{theme === 'dark' ? t('Mode clair', 'Light mode') : t('Mode sombre', 'Dark mode')}</span>
     </button>
   );
 }

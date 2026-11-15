@@ -2,7 +2,8 @@
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Activity } from 'lucide-react';
 import type { DatasetMetadata, Observation } from '../lib/api';
-import { formatMonth, formatValue } from '../lib/climate';
+import { formatMonth, formatUnit, formatValue } from '../lib/climate';
+import { useTranslation } from '../lib/i18n';
 
 /** Séries et étiquettes déjà filtrées pour le graphique mensuel. */
 interface ChartPanelProps {
@@ -13,14 +14,15 @@ interface ChartPanelProps {
 
 /** Trace la série mensuelle filtrée et affiche une note si la sélection est vide. */
 export function ChartPanel({ rows, metadata, periodLabel }: ChartPanelProps) {
+  const { t, intlLocale, language } = useTranslation();
   return (
     <section className="panel chart-panel" id="series">
       <div className="panel-heading chart-heading">
         <div>
-          <div className="section-title"><Activity size={19} aria-hidden="true" /><h2>Évolution de la série</h2></div>
+          <div className="section-title"><Activity size={19} aria-hidden="true" /><h2>{t('Évolution de la série', 'Series history')}</h2></div>
           <p>{metadata.label} · {periodLabel}</p>
         </div>
-        <span className="unit-chip">{metadata.unit}</span>
+        <span className="unit-chip">{formatUnit(metadata.unit, language)}</span>
       </div>
 
       {rows.length ? (
@@ -37,7 +39,7 @@ export function ChartPanel({ rows, metadata, periodLabel }: ChartPanelProps) {
                 <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 5" vertical={false} />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(value: string) => formatMonth(value, true)}
+                  tickFormatter={(value: string) => formatMonth(value, true, intlLocale)}
                   tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
@@ -46,7 +48,7 @@ export function ChartPanel({ rows, metadata, periodLabel }: ChartPanelProps) {
                 />
                 <YAxis
                   width={58}
-                  tickFormatter={(value: number) => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: metadata.precision }).format(value)}
+                  tickFormatter={(value: number) => new Intl.NumberFormat(intlLocale, { maximumFractionDigits: metadata.precision }).format(value)}
                   tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
@@ -55,8 +57,8 @@ export function ChartPanel({ rows, metadata, periodLabel }: ChartPanelProps) {
                 />
                 <Tooltip
                   cursor={{ stroke: 'var(--border)', strokeDasharray: '4 4' }}
-                  labelFormatter={(label) => formatMonth(String(label))}
-                  formatter={(value) => [formatValue(Number(value), metadata), metadata.label]}
+                  labelFormatter={(label) => formatMonth(String(label), false, intlLocale)}
+                  formatter={(value) => [formatValue(Number(value), metadata, intlLocale, language), metadata.label]}
                   contentStyle={{ borderRadius: 12, borderColor: 'var(--border)', boxShadow: '0 12px 30px rgba(18, 47, 67, .12)' }}
                 />
                 <Area
@@ -75,7 +77,7 @@ export function ChartPanel({ rows, metadata, periodLabel }: ChartPanelProps) {
           <div className="chart-legend"><span className="legend-swatch" style={{ backgroundColor: metadata.color }} />{metadata.label}<span className="legend-context">· {metadata.source}</span></div>
         </>
       ) : (
-        <div className="chart-empty" role="status">Aucune observation pour cette zone et cette période.</div>
+        <div className="chart-empty" role="status">{t('Aucune observation pour cette zone et cette période.', 'No observation for this area and period.')}</div>
       )}
     </section>
   );

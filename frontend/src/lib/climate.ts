@@ -35,26 +35,40 @@ export function monthFromIndex(index: number): string {
   return `${year}-${String(month).padStart(2, '0')}`;
 }
 
-/** Formate le mois en français en fixant UTC pour éviter un décalage local. */
-export function formatMonth(value: string, short = false): string {
+/**
+ * Formate le mois en fixant UTC pour éviter un décalage local.
+ * La locale est le français par défaut; une locale explicite suit la langue choisie.
+ */
+export function formatMonth(value: string, short = false, locale = 'fr-FR'): string {
   const month = value.slice(0, 7);
   if (!/^\d{4}-\d{2}$/.test(month)) return '—';
   const date = new Date(`${month}-01T12:00:00Z`);
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat(locale, {
     month: short ? 'short' : 'long',
     year: 'numeric',
     timeZone: 'UTC',
   }).format(date);
 }
 
+/** Traduit les unités composées renvoyées par l’API (mm/mois, mm/jour). */
+export function formatUnit(unit: string, language: 'fr' | 'en' = 'fr'): string {
+  if (language === 'fr') return unit;
+  return unit.replace(/\bmm\/mois\b/g, 'mm/month').replace(/\bmm\/jour\b/g, 'mm/day');
+}
+
 /** Applique l’unité et la précision déclarées dans les métadonnées du produit. */
-export function formatValue(value: number | null | undefined, metadata: Pick<DatasetMetadata, 'precision' | 'unit'>): string {
+export function formatValue(
+  value: number | null | undefined,
+  metadata: Pick<DatasetMetadata, 'precision' | 'unit'>,
+  locale = 'fr-FR',
+  language: 'fr' | 'en' = 'fr',
+): string {
   if (value == null || !Number.isFinite(value)) return '—';
-  const number = new Intl.NumberFormat('fr-FR', {
+  const number = new Intl.NumberFormat(locale, {
     minimumFractionDigits: metadata.precision,
     maximumFractionDigits: metadata.precision,
   }).format(value);
-  return `${number} ${metadata.unit}`;
+  return `${number} ${formatUnit(metadata.unit, language)}`;
 }
 
 /** Calcule la moyenne des valeurs finies ou renvoie null si aucune ne subsiste. */
@@ -101,27 +115,35 @@ export function summarizeRows(rows: Observation[], period: Period): SummaryStats
 }
 
 /** Formate le ou les mois où le maximum de la sélection a été observé. */
-export function maximumPeriodNote(months: string[]): string {
-  const labels = months.map((month) => formatMonth(month, true));
-  if (labels.length === 0) return 'Aucun maximum observé dans cette sélection';
-  if (labels.length === 1) return `Mois du maximum observé : ${labels[0]}`;
+export function maximumPeriodNote(months: string[], locale = 'fr-FR', language: 'fr' | 'en' = 'fr'): string {
+  const labels = months.map((month) => formatMonth(month, true, locale));
+  if (labels.length === 0) return language === 'en' ? 'No maximum observed in this selection' : 'Aucun maximum observé dans cette sélection';
+  if (labels.length === 1) return language === 'en' ? `Month of the observed maximum: ${labels[0]}` : `Mois du maximum observé : ${labels[0]}`;
 
   const visibleLabels = labels.slice(0, 3);
   const remaining = labels.length - visibleLabels.length;
-  const suffix = remaining > 0 ? `, et ${remaining} autre${remaining === 1 ? '' : 's'}` : '';
-  return `Mois ex æquo : ${visibleLabels.join(', ')}${suffix}`;
+  const suffix = remaining > 0
+    ? language === 'en' ? `, and ${remaining} more` : `, et ${remaining} autre${remaining === 1 ? '' : 's'}`
+    : '';
+  return language === 'en'
+    ? `Tied months: ${visibleLabels.join(', ')}${suffix}`
+    : `Mois ex æquo : ${visibleLabels.join(', ')}${suffix}`;
 }
 
 /** Formate le ou les mois où le minimum de la sélection a été observé. */
-export function minimumPeriodNote(months: string[]): string {
-  const labels = months.map((month) => formatMonth(month, true));
-  if (labels.length === 0) return 'Aucun minimum observé dans cette sélection';
-  if (labels.length === 1) return `Mois du minimum observé : ${labels[0]}`;
+export function minimumPeriodNote(months: string[], locale = 'fr-FR', language: 'fr' | 'en' = 'fr'): string {
+  const labels = months.map((month) => formatMonth(month, true, locale));
+  if (labels.length === 0) return language === 'en' ? 'No minimum observed in this selection' : 'Aucun minimum observé dans cette sélection';
+  if (labels.length === 1) return language === 'en' ? `Month of the observed minimum: ${labels[0]}` : `Mois du minimum observé : ${labels[0]}`;
 
   const visibleLabels = labels.slice(0, 3);
   const remaining = labels.length - visibleLabels.length;
-  const suffix = remaining > 0 ? `, et ${remaining} autre${remaining === 1 ? '' : 's'}` : '';
-  return `Mois ex æquo pour le minimum : ${visibleLabels.join(', ')}${suffix}`;
+  const suffix = remaining > 0
+    ? language === 'en' ? `, and ${remaining} more` : `, et ${remaining} autre${remaining === 1 ? '' : 's'}`
+    : '';
+  return language === 'en'
+    ? `Tied months for the minimum: ${visibleLabels.join(', ')}${suffix}`
+    : `Mois ex æquo pour le minimum : ${visibleLabels.join(', ')}${suffix}`;
 }
 
 /** Résout un raccourci de période dans la couverture réelle du dataset. */

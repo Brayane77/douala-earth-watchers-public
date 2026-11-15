@@ -279,7 +279,7 @@ a { color: inherit; }
   .metric-heading { font-size: 9px; }
   .metric-note { font-size: 8px; }
   .dashboard-columns, .primary-column, .detail-column { gap: 11px; }
-  .panel, .source-panel, .zone-panel { padding: 12px; }
+  .panel, .source-panel { padding: 12px; }
   .map-heading { align-items: flex-start; flex-direction: column; }
   .map-current-value { max-width: 100%; }
   .map-stage { height: 370px; }
@@ -1115,4 +1115,78 @@ a { color: inherit; }
   .ml-context-details { grid-template-columns: minmax(0, 1fr); gap: 3px; }
   .ml-context-details dt { margin-top: 6px; }
   .ml-context-details dd { margin-bottom: 5px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Sélecteur de langue (en-tête) : même gabarit que la commande de thème.
+   --------------------------------------------------------------------------- */
+.language-toggle { display: inline-flex; min-height: 36px; align-items: center; gap: 6px; padding: 0 9px; border: 1px solid rgb(168 194 225 / 25%); border-radius: 10px; background: linear-gradient(120deg, rgb(255 255 255 / 7%), rgb(255 255 255 / 3%)); color: #e9f3f7; transition: border-color .18s ease, background .18s ease; }
+.language-toggle > svg { flex: 0 0 auto; color: #9bdde9; }
+.language-toggle select { max-width: 108px; border: 0; outline: none; background: transparent; color: inherit; cursor: pointer; font-size: 10px; font-weight: 700; }
+.language-toggle select option { background: #fff; color: #173346; }
+.language-toggle:hover { border-color: rgb(120 218 229 / 55%); background: rgb(255 255 255 / 11%); }
+.language-toggle:focus-within { outline: 3px solid rgb(91 100 232 / 35%); outline-offset: 2px; }
+
+/* Analyse de tendance : pente descriptive, dispersion et limites. */
+.trend-analysis-panel { margin-top: 17px; scroll-margin-top: 92px; }
+.trend-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+.trend-stat { display: flex; min-width: 0; min-height: 94px; flex-direction: column; justify-content: space-between; gap: 9px; padding: 12px; border: 1px solid #e0e7f1; border-radius: 11px; background: linear-gradient(135deg, #fbfcff, #f3f6fc); }
+.trend-stat > span { color: #687991; font-size: 9px; font-weight: 800; letter-spacing: .055em; text-transform: uppercase; }
+.trend-stat > strong { overflow-wrap: anywhere; color: #233955; font-family: "Manrope", sans-serif; font-size: clamp(14px, 1.5vw, 19px); font-variant-numeric: tabular-nums; line-height: 1.25; }
+.trend-stat > small { color: #7b8ba0; font-size: 9px; line-height: 1.4; }
+.trend-stat-signal { border-color: #cbe9dc; background: linear-gradient(135deg, #f5fcf8, #eaf7f0); }
+.trend-stat-signal > strong { color: #16744f; }
+.trend-chart-wrap { width: 100%; height: 280px; margin-top: 13px; }
+.trend-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px 18px; color: #65798c; font-size: 9px; }
+.trend-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.trend-legend i { display: inline-block; width: 19px; height: 3px; border-radius: 4px; }
+.trend-legend-observed { background: #6578d9; }
+.trend-legend-fit { background: #d97706; }
+.trend-method-note, .trend-message { display: flex; align-items: flex-start; gap: 9px; margin-top: 13px; padding: 10px 11px; border: 1px solid #dce8f0; border-radius: 9px; background: #f5f9fc; color: #526a7a; }
+.trend-method-note svg, .trend-message > svg { flex: 0 0 auto; margin-top: 1px; color: #447fa1; }
+.trend-method-note p, .trend-message p { margin: 0; font-size: 9px; line-height: 1.55; }
+.trend-limits { margin-top: 10px; padding: 11px 12px; border: 1px solid #e9e1cf; border-radius: 9px; background: #fffaf0; color: #6c604b; }
+.trend-limits > strong { display: block; margin-bottom: 5px; color: #68532d; font-size: 10px; }
+.trend-limits ul { display: grid; gap: 4px; margin: 0; padding-left: 17px; }
+.trend-limits li { font-size: 9px; line-height: 1.5; }
+.trend-warning { border-color: #efdfbf; background: #fffaf0; color: #705b35; }
+.trend-warning > svg { color: #b27b28; }
+.trend-warning strong { display: block; margin-bottom: 4px; font-size: 10px; }
+
+/* Écran d’entrée de marque et retours non bloquants des visualisations différées. */
+.loading-logo { display: block; width: min(100%, 116px); max-height: 116px; margin: 0 auto 16px; object-fit: contain; }
+.app-message-card { text-align: center; }
+.app-message-card .loading-mark { margin-right: auto; margin-left: auto; }
+.panel-loading-fallback { display: grid; min-height: 180px; place-items: center; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--muted-foreground); font-size: 12px; text-align: center; }
+
+/* Variantes sombres des nouveaux blocs. */
+:root[data-theme='dark'] .trend-stat { border-color: #263446; background: linear-gradient(135deg, #0c121b, #0b111a); }
+:root[data-theme='dark'] .trend-stat > span,
+:root[data-theme='dark'] .trend-stat > small { color: #a6b6c7; }
+:root[data-theme='dark'] .trend-stat > strong { color: #e4edf8; }
+:root[data-theme='dark'] .trend-stat-signal { border-color: #244638; background: linear-gradient(135deg, #0d1b17, #0c1713); }
+:root[data-theme='dark'] .trend-stat-signal > strong { color: #8de0b5; }
+:root[data-theme='dark'] .trend-legend { color: #b5c4d3; }
+:root[data-theme='dark'] .trend-method-note,
+:root[data-theme='dark'] .trend-message { border-color: #253548; background: #0c131c; color: #c0cedb; }
+:root[data-theme='dark'] .trend-method-note svg,
+:root[data-theme='dark'] .trend-message > svg { color: #8ad5eb; }
+:root[data-theme='dark'] .trend-limits,
+:root[data-theme='dark'] .trend-warning { border-color: #51442c; background: #1c1811; color: #dbc99f; }
+:root[data-theme='dark'] .trend-limits > strong,
+:root[data-theme='dark'] .trend-warning strong { color: #f0d99f; }
+:root[data-theme='dark'] .trend-warning > svg { color: #e2b864; }
+:root[data-theme='dark'] .language-toggle { border-color: rgb(168 194 225 / 25%); color: #e9f3f7; }
+
+@media (max-width: 760px) {
+  .trend-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trend-chart-wrap { height: 250px; }
+  .language-toggle { min-height: 34px; padding: 0 6px; }
+  .language-toggle select { max-width: 84px; font-size: 9px; }
+}
+@media (max-width: 500px) {
+  .trend-summary-grid { grid-template-columns: minmax(0, 1fr); }
+  .trend-stat { min-height: 83px; }
+  .trend-chart-wrap { height: 225px; }
+  .trend-limits { padding: 10px; }
 }
