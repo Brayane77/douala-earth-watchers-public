@@ -1,8 +1,9 @@
 /** Page de provenance et de contrôles structurels, avec l’archive MODIS séparée du catalogue mensuel. */
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Activity, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Database, Info, Leaf, LoaderCircle, MapPin, RefreshCw, Satellite, Waves, type LucideIcon } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Database, Info, Leaf, LoaderCircle, MapPin, RefreshCw, Waves } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
+import brandLogo from '../assets/logo-dew.svg';
 import { fetchDashboardData, fetchModisVegetationArchive } from '../lib/api';
 import type { DashboardResponse, DatasetMetadata, Observation } from '../lib/api';
 import { formatMonth, monthIndex } from '../lib/climate';
@@ -30,7 +31,7 @@ function SourcesPage() {
     <div className="sources-page-shell">
       <header className="topbar sources-topbar">
         <Link className="brand-lockup" to="/">
-          <span className="brand-mark"><Waves size={23} aria-hidden="true" /></span>
+          <span className="brand-mark"><img className="brand-logo" src={brandLogo} alt="" aria-hidden="true" /></span>
           <span className="brand-copy">
             <strong>Douala Earth Watchers</strong>
             <small>Sources et validation</small>
@@ -115,7 +116,7 @@ function SourcesContent({ payload }: { payload: DashboardResponse }) {
         <div>
           <span className="eyebrow">CATALOGUE LOCAL · CONTRÔLES TRANSPARENTS</span>
           <h1>Sources et validation</h1>
-          <p>Les indicateurs viennent des CSV versionnés du dépôt. L’interface ne lance pas de requête vers NASA et ne remplace pas une source manquante.</p>
+          <p>Sources, périodes, unités et contrôles de cohérence des séries versionnées du dépôt.</p>
         </div>
         <Link to="/" className="back-link"><ArrowLeft size={15} aria-hidden="true" /> Retour au tableau de bord</Link>
       </div>
@@ -124,7 +125,7 @@ function SourcesContent({ payload }: { payload: DashboardResponse }) {
         <div className="panel-heading">
           <div>
             <div className="section-title"><CheckCircle2 size={19} aria-hidden="true" /><h2 id="validation-title">Contrôles des données chargées</h2></div>
-            <p>Résultat calculé sur le payload reçu de l’API pour chaque série.</p>
+            <p>Vérification structurelle de chaque série reçue de l’API.</p>
           </div>
           <span className={`validation-count ${checkedDatasets === datasets.length ? 'validation-count-ok' : 'validation-count-warning'}`}>
             {checkedDatasets} / {datasets.length} séries cohérentes
@@ -147,27 +148,13 @@ function SourcesContent({ payload }: { payload: DashboardResponse }) {
       {/* Cette archive MODIS reste séparée des séries mensuelles utilisées par le dashboard. */}
       <ModisArchivePanel />
 
-      <section className="panel unavailable-panel" aria-labelledby="unavailable-title">
-        <div className="panel-heading">
-          <div>
-            <div className="section-title"><AlertTriangle size={19} aria-hidden="true" /><h2 id="unavailable-title">Données et fonctions absentes</h2></div>
-            <p>Ces limites sont visibles plutôt que masquées par une valeur fictive.</p>
-          </div>
-        </div>
-        <div className="unavailable-grid">
-          <UnavailableItem icon={Satellite} title="Température de surface (LST)" detail="Aucun raster ou CSV LST exploitable. T2M mesure la température de l’air à 2 m, pas la température de surface." />
-          <UnavailableItem icon={Activity} title="Prévision actuelle et alertes officielles" detail="Le backtest historique T2M est disponible dans une page distincte et les seuils exploratoires sont configurables. Le snapshot s’arrête au 2025-12-31, sans date de récupération, et aucune source officielle d’alerte n’est connectée." />
-          <UnavailableItem icon={MapPin} title="Valeur par clic ou quartier" detail="Les séries sont agrégées ou ponctuelles et aucun raster ni polygone n’est disponible. Le fond OpenStreetMap n’est pas une couche de mesure." />
-        </div>
-      </section>
-
       <div className="validation-cta-row">
         <Link to="/previsions" className="export-button">Prévisions et alertes <ArrowRight size={14} aria-hidden="true" /></Link>
         <Link to="/validation-scientifique" className="export-button">Backtest scientifique <ArrowRight size={14} aria-hidden="true" /></Link>
       </div>
 
       <footer className="app-footer sources-footer">
-        <span><strong>Douala Earth Watchers</strong> · Mode démo sur données locales</span>
+        <span><strong>Douala Earth Watchers</strong> · données locales versionnées</span>
         <span><Database size={14} aria-hidden="true" /> {datasets.reduce((total, dataset) => total + dataset.inspection.rowCount, 0).toLocaleString('fr-FR')} lignes reçues · {payload.source}</span>
       </footer>
     </main>
@@ -210,16 +197,15 @@ function ModisArchivePanel() {
           </div>
 
           {/* Les rangs sont calculés depuis le CSV brut et restent des comptes QA, pas des scores de prévision. */}
-          <div className="unavailable-grid">
-            <article className="unavailable-item"><span className="availability-icon"><CheckCircle2 size={17} aria-hidden="true" /></span><div><strong>QA bonne — rang 0</strong><p>{archive.data.metadata.quality_counts.good} composites</p></div></article>
-            <article className="unavailable-item"><span className="availability-icon"><Info size={17} aria-hidden="true" /></span><div><strong>QA marginale — rang 1</strong><p>{archive.data.metadata.quality_counts.marginal} composites</p></div></article>
-            <article className="unavailable-item"><span className="availability-icon"><AlertTriangle size={17} aria-hidden="true" /></span><div><strong>QA nuageuse — rang 3</strong><p>{archive.data.metadata.quality_counts.cloudy} composites</p></div></article>
-            <article className="unavailable-item"><span className="availability-icon"><MapPin size={17} aria-hidden="true" /></span><div><strong>Masque côtier</strong><p>{archive.data.metadata.land_water_mask_counts['Ocean coastlines and lake shorelines'] ?? 0} composites classés « Ocean coastlines and lake shorelines »</p></div></article>
+          <div className="qa-grid">
+            <article className="qa-card"><span className="qa-icon"><CheckCircle2 size={17} aria-hidden="true" /></span><div><strong>QA bonne — rang 0</strong><p>{archive.data.metadata.quality_counts.good} composites</p></div></article>
+            <article className="qa-card"><span className="qa-icon"><Info size={17} aria-hidden="true" /></span><div><strong>QA marginale — rang 1</strong><p>{archive.data.metadata.quality_counts.marginal} composites</p></div></article>
+            <article className="qa-card"><span className="qa-icon"><AlertTriangle size={17} aria-hidden="true" /></span><div><strong>QA nuageuse — rang 3</strong><p>{archive.data.metadata.quality_counts.cloudy} composites</p></div></article>
+            <article className="qa-card"><span className="qa-icon"><MapPin size={17} aria-hidden="true" /></span><div><strong>Masque côtier</strong><p>{archive.data.metadata.land_water_mask_counts['Ocean coastlines and lake shorelines'] ?? 0} composites classés « Ocean coastlines and lake shorelines »</p></div></article>
           </div>
 
           {/* Le conflit AppEEARS et les limites scientifiques accompagnent les valeurs servies. */}
           <p className="validation-note"><AlertTriangle size={15} aria-hidden="true" />{archive.data.metadata.status_warning}</p>
-          <p className="source-note"><Info size={15} aria-hidden="true" />Indices sans unité; valeurs brutes exportées avec QA. Pas d’interpolation quotidienne, de prédiction T2M ni d’interprétation par quartier. Le statut d’éligibilité au modèle est : non.</p>
         </>
       )}
     </section>
@@ -251,16 +237,6 @@ function SourceRecord({ kind, metadata, inspection }: { kind: string; metadata: 
         <div><dt>Lignes invalides / doublons</dt><dd>{inspection.invalidRows} / {inspection.duplicateMonths}</dd></div>
       </dl>
       <p className="source-note"><Info size={15} aria-hidden="true" />{metadata.provenance_note}</p>
-    </article>
-  );
-}
-
-/** Affiche une limitation documentée sans la remplacer par une valeur estimée. */
-function UnavailableItem({ icon: Icon, title, detail }: { icon: LucideIcon; title: string; detail: string }) {
-  return (
-    <article className="unavailable-item">
-      <span className="availability-icon"><Icon size={17} aria-hidden="true" /></span>
-      <div><strong>{title}</strong><p>{detail}</p></div>
     </article>
   );
 }

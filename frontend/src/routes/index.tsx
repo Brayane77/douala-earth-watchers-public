@@ -11,7 +11,6 @@ import {
   ChevronDown,
   Database,
   Home,
-  Info,
   Leaf,
   LoaderCircle,
   Map,
@@ -28,6 +27,7 @@ import { VegetationPanel } from '../components/VegetationPanel';
 import { MetricCard } from '../components/MetricCard';
 import { ThemeToggle } from '../components/ThemeToggle';
 import cityImage from '../assets/douala-city.jpg';
+import brandLogo from '../assets/logo-dew.svg';
 import { fetchDashboardData } from '../lib/api';
 import type { DashboardResponse, DatasetMetadata } from '../lib/api';
 import {
@@ -66,8 +66,8 @@ const navigation: NavigationItem[] = [
   { id: 'map', label: 'Carte de référence', icon: Map },
   { id: 'series', label: 'Évolution temporelle', icon: Activity },
   { id: 'vegetation', label: 'Végétation', icon: Leaf },
-  { id: 'previsions', label: 'Prévisions et alertes', icon: BellRing },
-  { id: 'sources', label: 'Sources et validation', icon: Database },
+  { id: 'previsions', label: 'Prévisions et seuils', icon: BellRing },
+  { id: 'sources', label: 'Sources et contrôles', icon: Database },
 ];
 
 // Identifiant d’interface séparé, car l’archive MODIS n’appartient pas au catalogue mensuel.
@@ -208,7 +208,7 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
           <Menu size={21} aria-hidden="true" />
         </button>
         <a className="brand-lockup" href="#overview" onClick={(event) => { event.preventDefault(); navigateTo('overview'); }}>
-          <span className="brand-mark"><Waves size={23} aria-hidden="true" /></span>
+          <span className="brand-mark"><img className="brand-logo" src={brandLogo} alt="" aria-hidden="true" /></span>
           <span className="brand-copy">
             <strong>Douala Earth Watchers</strong>
             <small>Observatoire environnemental de Douala</small>
@@ -267,7 +267,7 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
             <div>
               <span className="eyebrow">{isVegetationProduct ? 'OBSERVATIONS DE VÉGÉTATION · MODIS' : 'SÉRIES CLIMATIQUES · CAMEROUN'}</span>
               <h1>{isVegetationProduct ? 'Composites de végétation MODIS DV.' : 'Le climat de Douala, en données.'}</h1>
-              <p>{isVegetationProduct ? 'Explorez NDVI et EVI sur les dates composites réellement reçues, sans interpolation ni extrapolation à tous les quartiers.' : 'Explorez les séries mensuelles, leur provenance et les mois réellement disponibles — sans valeurs simulées.'}</p>
+              <p>{isVegetationProduct ? 'Explorez NDVI et EVI sur les dates composites réellement reçues, sans interpolation.' : 'Explorez les séries mensuelles, leur provenance et les mois réellement disponibles.'}</p>
             </div>
             <div className="period-summary"><CalendarDays size={16} aria-hidden="true" /><span>{periodLabel}</span></div>
           </section>
@@ -305,7 +305,7 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
                 </div>
               </label>
 
-              <div className="filter-field period-field">
+              <div className="filter-field">
                 <span id="period-label">Période mensuelle</span>
                 <div className="month-inputs" aria-labelledby="period-label">
                   <input
@@ -328,7 +328,7 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
                 </div>
               </div>
 
-              <div className="filter-field preset-field">
+              <div className="filter-field">
                 <span>Raccourcis</span>
                 <div className="period-presets" role="group" aria-label="Raccourcis de période">
                   {presets.map((preset) => (
@@ -407,42 +407,18 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
                 </div>
                 <dl className="source-details">
                   <div><dt>Produit / source</dt><dd>{metadata.source}</dd></div>
-                  <div><dt>Variable</dt><dd>{metadata.variable}</dd></div>
                   <div><dt>Fichier</dt><dd>{metadata.filename}</dd></div>
-                  <div><dt>Unité</dt><dd>{metadata.unit}</dd></div>
                   <div><dt>Agrégation</dt><dd>{metadata.aggregation}</dd></div>
-                  <div><dt>Résolution</dt><dd>{metadata.spatial_resolution}</dd></div>
                   <div><dt>Période disponible</dt><dd>{formatMonth(metadata.start)} — {formatMonth(metadata.end)}</dd></div>
-                  <div><dt>Lignes dans le CSV</dt><dd>{metadata.record_count.toLocaleString('fr-FR')}</dd></div>
                 </dl>
-                <div className="source-note">
-                  <Info size={16} aria-hidden="true" />
-                  <p>{metadata.provenance_note}</p>
-                </div>
                 <Link to="/sources" className="source-details-link">Consulter les sources et les contrôles <ArrowRight size={14} aria-hidden="true" /></Link>
               </section>
-
-              <ZonePanel metadata={metadata} sector={sectorLabel} rows={visibleRows} stats={stats} period={periodLabel} />
             </aside>
           </div>
             </>
           )}
 
           <VegetationPanel />
-
-          <section className="availability-panel" aria-labelledby="availability-title">
-            <div className="panel-heading">
-              <div>
-                <div className="section-title"><Info size={18} aria-hidden="true" /><h2 id="availability-title">Données et usages indisponibles — aucune valeur simulée</h2></div>
-                <p>Les éléments ci-dessous exigent une source ou une validation qui n’est pas disponible dans cette archive.</p>
-              </div>
-            </div>
-            <div className="availability-grid">
-              <AvailabilityCard icon={Leaf} title="NDVI comme indicateur climatique mensuel" detail="L’archive MODIS DV est accessible dans le sélecteur Série / produit et la section Végétation, à sa fréquence native de 16 jours et avec ses QA. Elle reste séparée des statistiques T2M/précipitations et de toute prévision." />
-              <AvailabilityCard icon={Satellite} title="Température de surface (LST)" detail="Aucun raster LST disponible. T2M décrit la température de l’air à 2 m, pas celle de la surface." />
-              <AvailabilityCard icon={Activity} title="Prévision actuelle et alertes officielles" detail="Le backtest historique et les seuils exploratoires sont accessibles dans Prévisions et alertes. Faute de snapshot récent et de flux d’autorité, aucune valeur future ni aucun avis officiel n’est publié." />
-            </div>
-          </section>
 
           <footer className="app-footer">
             <span><strong>Douala Earth Watchers</strong> · Observatoire environnemental de Douala</span>
@@ -451,55 +427,6 @@ function DashboardContent({ payload }: { payload: DashboardResponse }) {
         </main>
       </div>
     </div>
-  );
-}
-
-/** Données filtrées nécessaires au résumé spatial agrégé du dashboard. */
-interface ZonePanelProps {
-  metadata: DatasetMetadata;
-  sector: string;
-  rows: { date: string; sector: string; value: number }[];
-  stats: ReturnType<typeof summarizeRows>;
-  period: string;
-}
-
-/** Récapitule les coordonnées de référence et la couverture sans détail par quartier. */
-function ZonePanel({ metadata, sector, rows, stats, period }: ZonePanelProps) {
-  return (
-    <section className="panel zone-panel">
-      <div className="panel-heading">
-        <div>
-          <div className="section-title"><MapPin size={18} aria-hidden="true" /><h2>Repère spatial</h2></div>
-          <p>Coordonnée de référence du catalogue, pas un point de mesure par quartier</p>
-        </div>
-      </div>
-      <div className="zone-name"><strong>{sector}</strong><span>AGRÉGAT</span></div>
-      <div className="coordinate-line">{metadata.latitude.toFixed(3)}° N <span>·</span> {metadata.longitude.toFixed(3)}° E</div>
-      <dl className="zone-stats">
-        <div><dt>Mois renseignés / attendus</dt><dd>{stats.observedMonths} / {stats.expectedMonths}</dd></div>
-        <div><dt>Observations dans la sélection</dt><dd>{rows.length.toLocaleString('fr-FR')}</dd></div>
-        <div><dt>Période affichée</dt><dd>{period}</dd></div>
-        <div><dt>Résolution annoncée</dt><dd>{metadata.spatial_resolution}</dd></div>
-      </dl>
-      <p className="zone-disclaimer">La coordonnée est un repère du catalogue. Les séries sont agrégées ou ponctuelles et ne localisent pas chaque observation à l’intérieur de Douala.</p>
-    </section>
-  );
-}
-
-/** Contenu d’une carte qui explique une source ou fonction non disponible. */
-interface AvailabilityCardProps {
-  icon: LucideIcon;
-  title: string;
-  detail: string;
-}
-
-/** Rend une limite ou une source indisponible avec son explication explicite. */
-function AvailabilityCard({ icon: Icon, title, detail }: AvailabilityCardProps) {
-  return (
-    <article className="availability-card">
-      <span className="availability-icon"><Icon size={17} aria-hidden="true" /></span>
-      <div><strong>{title}</strong><p>{detail}</p></div>
-    </article>
   );
 }
 

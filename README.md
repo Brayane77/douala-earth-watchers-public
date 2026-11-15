@@ -12,7 +12,7 @@ Tableau de bord React/TanStack et FastAPI pour explorer des séries mensuelles d
 - Export CSV local des seules lignes affichées, avec date, zone, indicateur, variable, valeur, unité et source.
 - Carte temporelle Plotly sur fond OpenStreetMap, avec glissière et lecture/pause des mois; un seul point de référence, sans raster, interpolation ni valeur par quartier.
 - Section Végétation MODIS dédiée à l’archive `DV`: nuage de points NDVI/EVI aux dates de composites réelles de 16 jours, avec QA et masque côtier visibles; séparée des séries climatiques.
-- Mode clair/sombre, choix mémorisé dans le navigateur.
+- Mode clair/sombre avec **fond blanc en permanence par défaut** : le choix explicite est mémorisé dans le navigateur et appliqué avant le premier rendu; le mode clair ne dépend pas du réglage système.
 - Page `/sources` avec catalogue, périodes, unités, résolutions, notes de provenance, contrôles de cohérence et panneau de traçabilité MODIS `DV`.
 - Page `/validation-scientifique` avec le backtest T2M quotidien pré-calculé sur 2025, séparé par horizons J+1 à J+3 et comparé à la persistance et à une baseline saisonnière; exports CSV/JSON issus du même artefact.
 - Page `/previsions` avec un laboratoire ML mensuel : dépôt manuel d’un CSV et confirmation utilisateur qu’il contient des observations réelles, choix des colonnes/date/variable, format numérique, horizon de 1 à 24 mois, candidats forêt aléatoire/Ridge, validation chronologique comparée à la persistance et à la baseline saisonnière, scores MAE/RMSE/N par horizon, dates/valeurs projetées et exports JSON/CSV. Ce scénario reste expérimental et distinct du forecast actuel.

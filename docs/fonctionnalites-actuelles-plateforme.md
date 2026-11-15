@@ -52,11 +52,12 @@ L’archive Drive `ad8b74da-fcbf-422e-ab17-a9889a15740b.zip` n’est pas intégr
 
 ### 1.4 Fonctions communes d’interface
 
-- Thème clair/sombre; le choix est conservé dans le stockage local du navigateur et, sans choix antérieur, la préférence système est utilisée.
+- Thème clair/sombre; **le mode clair (fond blanc) est le défaut permanent**, sans dépendre de la préférence système. Le choix explicite est conservé dans le stockage local du navigateur et appliqué par un script d’amorçage dans le `<head>`, avant le premier rendu, afin d’éviter tout éclair de fond blanc en mode sombre.
 - Mise en page responsive, menu latéral repliable sur petit écran, formulaires et boutons accessibles avec libellés et états adaptés.
 - Respect de la préférence de réduction des animations du système.
 - Pages d’erreur de route et page 404 avec actions de reprise/navigation.
 - Habillage visuel actuel inspiré des interfaces d’IA : trame discrète, panneaux translucides, accents cyan/indigo et fond noir en mode sombre. Les indicateurs du tableau de bord restent descriptifs; les modèles ne tournent que dans le laboratoire CSV explicitement soumis.
+- **Interface resserrée sur l’usage** : les panneaux de synthèse « Données et usages indisponibles », « Données et fonctions absentes », « Repère spatial », « Portée et limites » et « Interprétation à ne pas dépasser » ont été retirés. Leurs informations non redondantes (masque côtier MODIS, rejeu sur version archivée, coordonnée de référence) sont conservées en une ligne contextualisée dans le panneau ou la carte concernés, et les limites détaillées restent dans les notes de provenance de `/sources`.
 
 ## 2. Données actuellement proposées dans le tableau de bord
 

@@ -1,7 +1,7 @@
 /** Série MODIS de végétation séparée, affichée sur ses dates composites natives avec QA. */
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, Info, Leaf, RefreshCw } from 'lucide-react';
+import { AlertTriangle, Leaf, RefreshCw } from 'lucide-react';
 import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { fetchModisVegetationArchive } from '../lib/api';
 import type { ModisVegetationObservation } from '../lib/api';
@@ -154,8 +154,7 @@ export function VegetationPanel() {
             <div className="qa-nodata"><span>Sans données · rang −1</span><strong>{archive.data.metadata.quality_counts.no_data}</strong></div>
           </div>
 
-          <p className="validation-note vegetation-warning"><AlertTriangle size={15} aria-hidden="true" />Tous les composites sont affichés, y compris ceux classés nuageux. Les QA sont visibles au survol; le graphique n’ajoute aucun jour entre les dates du produit.</p>
-          <p className="source-note vegetation-source-note"><Info size={15} aria-hidden="true" />Masque côtier : {archive.data.metadata.land_water_mask_counts['Ocean coastlines and lake shorelines'] ?? 0} composites classés « Ocean coastlines and lake shorelines ». {archive.data.metadata.status_warning} Les indices restent hors des statistiques T2M et des prévisions.</p>
+          <p className="validation-note vegetation-warning"><AlertTriangle size={15} aria-hidden="true" />{archive.data.metadata.land_water_mask_counts['Ocean coastlines and lake shorelines'] ?? 0} composites sur {archive.data.metadata.record_count} portent le masque « Ocean coastlines and lake shorelines ». Tous les composites sont affichés, y compris ceux classés nuageux; les QA sont visibles au survol et aucun jour n’est ajouté entre les dates du produit. {archive.data.metadata.status_warning}</p>
         </>
       )}
     </section>
