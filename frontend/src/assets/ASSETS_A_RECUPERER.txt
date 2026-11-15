@@ -1,0 +1,4 @@
+Le ZIP de reproduction ne fournissait pas ses deux images binaires originales.
+
+- douala-city.jpg : visuel décoratif illustratif généré pour la barre latérale; il ne représente aucune mesure scientifique.
+- lst-map.jpg : non repris. Les CSV du dépôt ne contiennent pas de raster LST validé; le tableau utilise une carte OpenStreetMap avec un repère agrégé réel afin de ne pas afficher de fausse carte de chaleur.

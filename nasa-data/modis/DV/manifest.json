@@ -1,0 +1,45 @@
+{
+  "source": "NASA AppEEARS point extraction",
+  "archive_name": "2ffb66b7-32f5-4861-b927-3be7c4ec0e35.zip",
+  "drive_file_id": "1dAQApz_nJjg5ram0Lt6DwQ2bB2GrZcJt",
+  "drive_url": "https://drive.google.com/file/d/1dAQApz_nJjg5ram0Lt6DwQ2bB2GrZcJt/view?usp=drivesdk",
+  "archive_size_bytes": 22134,
+  "archive_sha256": "52cc2d5ebc5d76897d3f1c9cef43afdbc019a6b12e1b96042eb4f2ff6b7e67e6",
+  "drive_modified_at": "2026-11-14T10:32:30.738Z",
+  "local_retrieved_at_utc": null,
+  "task_id": "2ffb66b7-32f5-4861-b927-3be7c4ec0e35",
+  "task_name": "DV",
+  "request_status": "processing",
+  "readme_completed_at": "2026-11-14T09:59:51.834149",
+  "product": "MOD13Q1.061",
+  "product_doi": "https://doi.org/10.5067/MODIS/MOD13Q1.061",
+  "latitude": 4.05,
+  "longitude": 9.7,
+  "requested_start": "2015-01-01",
+  "requested_end": "2025-12-31",
+  "observed_start": "2014-12-19",
+  "observed_end": "2025-12-19",
+  "record_count": 254,
+  "spatial_resolution_m": 250,
+  "temporal_resolution_days": 16,
+  "qa_rank_counts": {
+    "0": 15,
+    "1": 9,
+    "2": 0,
+    "3": 230
+  },
+  "land_water_mask_counts": {
+    "Ocean coastlines and lake shorelines": 253,
+    "Land (Nothing else but land)": 1
+  },
+  "results_csv_sha256": "c3f5f6e7d47c06a1390fa205e4e08c9d7c7fb1b9b4e2b1cb855d174e8a2fb87a",
+  "request_json_sha256": "388cb2d6e236482d12589c7e79d685a1588cdbf618b194c68a798771eefd07f5",
+  "metadata_xml_sha256": "bfbc9a1d2dda38f936d6405b54738462ae82f51026399a0cedd4f0990e9075e4",
+  "notes": [
+    "The JSON request status is processing, while the AppEEARS README says the request was completed and the archive contains results; reconcile before external reuse.",
+    "The reported Drive modification timestamp (2026-11-14T10:32:30.738Z) and README completion timestamp (2026-11-14T09:59:51.834149) are later than the 2026-10-18 audit reference; treat them as unverified metadata, not as a local retrieval, completion, or publication date.",
+    "The AppEEARS CSV contains 253 composites in the requested date interval and one earlier composite dated 2014-12-19.",
+    "Do not interpolate the 16-day composites into a daily series or use this archive as a T2M predictor without separate QA and predictive-value validation.",
+    "Most dates have pixel reliability rank 3 (cloudy); almost every date is labeled ocean coastlines and lake shorelines in the land/water mask."
+  ]
+}

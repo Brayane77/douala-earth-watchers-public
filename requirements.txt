@@ -1,0 +1,14 @@
+# Framework d'API HTTP qui sert le frontend React.
+fastapi>=0.115,<1.0
+# Serveur ASGI pour exécuter l'API FastAPI en développement.
+uvicorn>=0.30,<1.0
+# Analyse des formulaires multipart pour l'import CSV du module ML.
+python-multipart>=0.0.9
+# Manipulation des tableaux de données et des séries temporelles.
+pandas>=2.1,<3.0
+# Calcul numérique pour le traitement des données et le modèle.
+numpy>=1.26,<3.0
+# Modèle de forêt aléatoire et métriques de validation temporelle.
+scikit-learn>=1.5,<2.0
+# Lecture du NetCDF MERRA-2 par les convertisseurs de données optionnels.
+netCDF4>=1.6,<2.0
