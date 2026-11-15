@@ -3,6 +3,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThemeToggle } from './ThemeToggle';
 import { THEME_STORAGE_KEY } from '../lib/theme';
+import { LanguageProvider } from '../lib/i18n';
+
+/** Enveloppe le composant du contexte de langue, requis par ses libellés. */
+function renderToggle() {
+  return render(<LanguageProvider><ThemeToggle /></LanguageProvider>);
+}
 
 /** Remplace la préférence système simulée par le setup de test. */
 function mockSystemPreference(prefersDark: boolean) {
@@ -35,7 +41,7 @@ describe('ThemeToggle', () => {
 
   it('restaure le thème sombre enregistré et mémorise le retour au clair', async () => {
     window.localStorage.setItem(THEME_STORAGE_KEY, 'dark');
-    render(<ThemeToggle />);
+    renderToggle();
 
     const lightModeButton = await screen.findByRole('button', { name: 'Passer au mode clair' });
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe('dark'));
@@ -52,7 +58,7 @@ describe('ThemeToggle', () => {
 
   it('démarre en mode clair sans choix enregistré, même si le système préfère le sombre', async () => {
     mockSystemPreference(true);
-    render(<ThemeToggle />);
+    renderToggle();
 
     await screen.findByRole('button', { name: 'Passer au mode sombre' });
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe('light'));
@@ -62,7 +68,7 @@ describe('ThemeToggle', () => {
   it('respecte un choix clair explicite alors que le système préfère le sombre', async () => {
     mockSystemPreference(true);
     window.localStorage.setItem(THEME_STORAGE_KEY, 'light');
-    render(<ThemeToggle />);
+    renderToggle();
 
     await screen.findByRole('button', { name: 'Passer au mode sombre' });
     await waitFor(() => expect(document.documentElement.dataset.theme).toBe('light'));

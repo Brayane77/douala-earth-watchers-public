@@ -12,6 +12,7 @@ import {
 import type { ReactNode } from 'react';
 import appCss from '../styles.css?url';
 import { THEME_BOOT_SCRIPT } from '../lib/theme';
+import { LANGUAGE_BOOT_SCRIPT, LanguageProvider } from '../lib/i18n';
 
 /** Affiche un état 404 avec un lien vers la page d’accueil. */
 function NotFoundComponent() {
@@ -67,7 +68,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     // Applique le thème mémorisé avant le premier rendu : le fond blanc reste le défaut
     // et un choix sombre ne provoque pas d'éclair blanc au chargement.
-    scripts: [{ children: THEME_BOOT_SCRIPT }],
+    scripts: [{ children: THEME_BOOT_SCRIPT }, { children: LANGUAGE_BOOT_SCRIPT }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -91,5 +92,9 @@ function RootShell({ children }: { children: ReactNode }) {
 /** Fournit le client de requêtes partagé aux routes enfants. */
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  return <QueryClientProvider client={queryClient}><Outlet /></QueryClientProvider>;
+  return (
+    <LanguageProvider>
+      <QueryClientProvider client={queryClient}><Outlet /></QueryClientProvider>
+    </LanguageProvider>
+  );
 }
